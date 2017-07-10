@@ -11,6 +11,7 @@
   "templates.forgot-password.ps": "پی‌نوشت: اگر شما تقاضای تغییر رمز عبور خود را نداده‌اید، این ایمیل را نادیده بگیرید.",
 
   "templates.comment-reply.subject": "شهردیگر: کسی به استدلال شما پاسخ داد",
+  "templates.new-comment.subject": "پاسخ جدیدی در مورد موضوع \"{topicTitle}\" ارسال شده است.",
   "templates.comment-reply.body": "شخصی به استدلال شما برای روی موضوعی پاسخ داده است:",
   "templates.comment-reply.body2": "برای مشاهده‌ی آن <a href=\"URL\">اینجا کلیک کنید</a>.",
 
