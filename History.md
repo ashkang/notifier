@@ -1,4 +1,32 @@
 
+2.1.0 / 2017-07-10
+==================
+
+  * Fix replies query
+  * Add new comment notification
+  * Expose templates
+
+2.0.3 / 2017-07-09
+==================
+
+  * Fix double initialization
+
+2.0.2 / 2017-07-09
+==================
+
+  * Fix graceful exit
+
+2.0.1 / 2017-07-09
+==================
+
+  * Fix node-graceful for agenda
+  * Update author comparison
+
+2.0.0 / 2017-07-09
+==================
+
+  * Complete notifier refactor
+
 1.5.0 / 2017-06-02
 ==================
 

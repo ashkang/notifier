@@ -1,78 +1,99 @@
-var debug = require('debug')
-var Agenda = require('agenda')
-var jobs = require('./lib/jobs')
-var transports = require('./lib/transports')
-var config = require('./lib/config')
+const pify = require('pify')
+const config = require('./lib/config')
+const templates = require('./lib/templates')
 
-var log = debug('democracyos:notifier')
+// Load translations
+require('./lib/translations')
 
-var agenda
+const notifier = module.exports = {}
 
-var exports = module.exports = function startNotifier (opts, callback) {
-  var inited = false
+/**
+ * Notifier Init
+ * Initialize async dependencies, including DB connection, jobs, etc
+ *
+ * @method init
+ * @return {Notifier}
+ */
 
-  config.set(opts)
+let initialization = null
 
-  agenda = new Agenda({
-    db: {
-      address: config.get('mongoUrl'),
-      collection: config.get('collection')
-    }
-  })
+notifier.init = function init () {
+  if (initialization) return initialization
 
-  transports()
+  initialization = Promise.all([
+    require('./lib/db'),
+    require('./lib/mailer'),
+    require('./lib/agenda')
+  ]).then(([db, mailer, agenda]) => {
+    notifier.db = db
+    notifier.mailer = mailer
+    notifier.agenda = agenda
 
-  agenda.on('ready', () => {
-    init((err) => {
-      log('agenda initialized.')
-      inited = true
-
-      if (callback) {
-        return callback(err)
-      }
+    /**
+     * Promisified verions of Agenda#every, Agenda#schedule and
+     * Agenda#now methods
+     */
+    ;['every', 'schedule', 'now'].forEach((method) => {
+      notifier[method] = pify(agenda[method].bind(agenda))
     })
-  })
 
-  agenda.on('error', (err) => {
-    // throw the error to crash if the server is already started
-    if (inited) throw err
+    return Promise.resolve(notifier)
+  }).then((notifier) => {
+    return require('./lib/jobs').init(notifier)
+  }).catch((err) => { throw err })
 
-    if (callback) {
-      return callback(err)
-    }
-  })
-
-  exports.notify = function notify (event, callback) {
-    jobs.process(event.event, event, callback)
-  }
+  return initialization
 }
 
-function init (callback) {
-  // initialize job processors
-  jobs.init(agenda)
+/**
+ * Notifier Server Start
+ * Start processing jobs
+ *
+ * @method start
+ * @return {Notifier}
+ */
 
-  agenda.purge(function (err) {
-    if (err) {
-      if (callback) callback(err)
-      return
-    }
-
-    agenda.on('start', function (job) {
-      log('Job \'%s\' started', job.attrs.name)
-    })
-
-    agenda.on('success', function (job) {
-      log('Job \'%s\' completed', job.attrs.name)
-    })
-
-    agenda.on('fail', function (err, job) {
-      log('Job \'%s\' failed - reason: %s', job.attrs.name, err)
-    })
-
-    agenda.start()
-
-    if (callback) {
-      return callback()
-    }
-  })
+notifier.start = function start () {
+  return notifier.init().then(() => {
+    notifier.agenda.start()
+    return Promise.resolve(notifier)
+  }).catch((err) => { throw err })
 }
+
+/**
+ * Expose config, this allows the overriding of any config option.
+ * @return {Config}
+ */
+
+notifier.config = config
+
+/**
+ * Expose templates, this allows the overriding of any template.
+ * @return {Object}
+ */
+
+notifier.templates = templates
+
+/**
+ * Expose db connection using mongojs
+ * Will be defined after the call of init()
+ * @return {MongoJS}
+ */
+
+notifier.db = null
+
+/**
+ * Expose Agenda instance
+ * Will be defined after the call of init()
+ * @return {Agenda}
+ */
+
+notifier.agenda = null
+
+/**
+ * Email sender utility
+ * Will be defined after the call of init()
+ * @return {Mailer}
+ */
+
+notifier.mailer = null
