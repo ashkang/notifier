@@ -1,21 +1,19 @@
 {
-  "templates.email.greeting": "سلام USER_NAME،",
+  "templates.email.greeting": "{userName} عزیز سلام،",
   "templates.email.signature": "شهر دیگر",
 
   "templates.welcome-email.subject": "به شهردیگر خوش آمدید",
-  "templates.welcome-email.body": "لطفا برای احراز هویت از ایمیل خود <a href=\"VALIDATE_MAIL_URL\">اینجا کلیک کنید</a>.",
+  "templates.welcome-email.body": "لطفا برای احراز هویت از ایمیل خود <a href=\"{validateUrl}\">اینجا کلیک کنید</a>.",
   "templates.welcome-email.ps": "پی‌نوشت: اگر شما درخواست عضویت در شهر دیگر را نداده‌اید، این ایمیل را نادیده بگیرید.",
 
   "templates.forgot-password.subject": "شهردیگر: تغییر رمز عبور شهردیگر",
-  "templates.forgot-password.body": "برای تغییر رمز عبور خود <a href=\"RESET_PASSWORD_URL\">اینجا کلیک کنید</a>.",
+  "templates.forgot-password.body": "برای تغییر رمز عبور خود <a href=\"{resetPasswordUrl}\">اینجا کلیک کنید</a>.",
   "templates.forgot-password.ps": "پی‌نوشت: اگر شما تقاضای تغییر رمز عبور خود را نداده‌اید، این ایمیل را نادیده بگیرید.",
 
   "templates.comment-reply.subject": "شهردیگر: کسی به استدلال شما پاسخ داد",
   "templates.new-comment.subject": "پاسخ جدیدی در مورد موضوع \"{topicTitle}\" ارسال شده است.",
-  "templates.comment-reply.body": "شخصی به استدلال شما برای روی موضوعی پاسخ داده است:",
-  "templates.comment-reply.body2": "برای مشاهده‌ی آن <a href=\"URL\">اینجا کلیک کنید</a>.",
 
   "templates.topic-published.subject": "شهردیگر: موضوع جدیدی منتشر شد",
   "templates.topic-published.body": "موضوع جدیدی انتشار یافته است:",
-  "templates.topic-published.body2": "برای دیدن آن <a href=\"URL\">اینجا کلیک کنید</a>."
+  "templates.topic-published.body2": "برای دیدن آن <a href=\"{url}\">اینجا کلیک کنید</a>."
 }
